@@ -1,9 +1,10 @@
 import Head from "next/head";
 import { useState } from "react";
+import Code from "../components/Code";
 import styles from "./index.module.css";
 
 export default function Home() {
-  const [animalInput, setAnimalInput] = useState("");
+  const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState();
 
   async function onSubmit(event) {
@@ -13,34 +14,45 @@ export default function Home() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ animal: animalInput }),
+      body: JSON.stringify({ prompt: prompt }),
     });
     const data = await response.json();
     setResult(data.result);
-    setAnimalInput("");
+    setPrompt("");
   }
 
   return (
     <div>
       <Head>
-        <title>OpenAI Quickstart</title>
-        <link rel="icon" href="/dog.png" />
+        <title>Searching code with OPENAI</title>
+        <link
+          rel="icon"
+          href="https://cdn-icons-png.flaticon.com/512/3296/3296083.png"
+        />
       </Head>
 
       <main className={styles.main}>
-        <img src="/dog.png" className={styles.icon} />
-        <h3>Name my pet</h3>
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/3296/3296083.png"
+          className={styles.icon}
+        />
+        <h3>Get code</h3>
         <form onSubmit={onSubmit}>
-          <input
+          <textarea
             type="text"
-            name="animal"
-            placeholder="Enter an animal"
-            value={animalInput}
-            onChange={(e) => setAnimalInput(e.target.value)}
-          />
-          <input type="submit" value="Generate names" />
+            name="prompt"
+            placeholder="Make get request with javascript and axios ?"
+            onChange={(e) => setPrompt(e.target.value)}
+          >
+            {prompt}
+          </textarea>
+          <input type="submit" value="Get code" />
         </form>
-        <div className={styles.result}>{result}</div>
+        {result && (
+          <div className="code">
+            <Code codeString={result} />
+          </div>
+        )}
       </main>
     </div>
   );
